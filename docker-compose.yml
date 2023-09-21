@@ -2,7 +2,7 @@ version: "3.5"
 networks:
   default:
     name: cdk-validium
-    
+
 services:
   grafana:
     container_name: grafana
@@ -304,7 +304,7 @@ services:
       - POSTGRES_USER=l2_explorer_user
       - POSTGRES_PASSWORD=l2_explorer_password
       - POSTGRES_DB=l2_explorer_db
-    command: [ "postgres", "-N", "500" ]
+    command: ["postgres", "-N", "500"]
 
   cdk-validium-mock-l1-network:
     container_name: cdk-validium-mock-l1-network
@@ -338,20 +338,20 @@ services:
       - "full"
       - "--rpc.allow-unprotected-txs"
 
-  cdk-validium-deploy-sepolia:
-    container_name: cdk-validium-deploy-sepolia
-    image: snapchain/cdk-validium-contracts
+  cdk-validium-deploy-trustless:
+    container_name: cdk-validium-deploy-trustless
+    image: synxless/tc-validium-contracts
     volumes:
       - ./config/deploy_parameters.json:/cdk-validium-contracts/deployment/deploy_parameters.json
       - deploy-output:/cdk-validium-contracts/deploymentOutput
     environment:
-      - MNEMONIC=<deployer-mnemonic>
-      - INFURA_PROJECT_ID=<deployer-infura-project-id>
-      - HARDHAT_NETWORK=sepolia
+      - PRIVATE_KEY_DEPLOYER=xxxxx
+      - L1_RPC=https://tc-node-auto.regtest.trustless.computer
+      - HARDHAT_NETWORK=trustless
     command:
       - "/bin/sh"
       - "-c"
-      - "npm run deploy:deployer:CDKValidium:sepolia && npm run deploy:testnet:CDKValidium:sepolia"
+      - "npm run deploy:deployer:CDKValidium:trustless && npm run deploy:testnet:CDKValidium:trustless"
 
   cdk-validium-data-availability:
     container_name: cdk-validium-data-availability
@@ -378,7 +378,7 @@ services:
 
   dac-setup-committee-mock-l1:
     container_name: dac-setup-committee
-    image: snapchain/cdk-validium-contracts
+    image: synxless/tc-validium-contracts
     depends_on:
       cdk-validium-mock-l1-network:
         condition: service_started
@@ -387,29 +387,29 @@ services:
     volumes:
       - deploy-output:/shared
     environment:
-      - JSONRPC_HTTP_URL=http://cdk-validium-mock-l1-network:8545
+      - JSONRPC_HTTP_URL=https://tc-node-auto.regtest.trustless.computer
       - DAC_URL=http://cdk-validium-data-availability:8444
-      - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
+      - DAC_ADDRESS=0x075e6FdC44df11c3AC084e5c8ecae903c4F281E2 #trusted aggregator
     command:
       - "/bin/sh"
       - "-c"
       - "npm run setup:committee"
 
-  dac-setup-committee-sepolia:
+  dac-setup-committee-trustless:
     container_name: dac-setup-committee
-    image: snapchain/cdk-validium-contracts
+    image: synxless/tc-validium-contracts
     depends_on:
-      cdk-validium-deploy-sepolia:
+      cdk-validium-deploy-trustless:
         condition: service_completed_successfully
       cdk-validium-data-availability:
         condition: service_started
     volumes:
       - deploy-output:/shared
     environment:
-      - JSONRPC_HTTP_URL=https://sepolia.infura.io/v3/<deployer-infura-project-id>
+      - JSONRPC_HTTP_URL=https://tc-node-auto.regtest.trustless.computer
       - DAC_URL=http://cdk-validium-data-availability:8444
-      - DAC_ADDRESS=0x70997970c51812dc3a010c7d01b50e0d17dc79c8
-      - DEPLOYER_PRIVATE_KEY=<deployer-private-key>
+      - DAC_ADDRESS=0x075e6FdC44df11c3AC084e5c8ecae903c4F281E2 #trusted aggregator
+      - DEPLOYER_PRIVATE_KEY=xxxxx
     command:
       - "/bin/sh"
       - "-c"
@@ -546,7 +546,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
+      - '/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components "rpc,synchronizer"'
 
   cdk-validium-permissionless-node:
     container_name: cdk-validium-permissionless-node
@@ -573,7 +573,7 @@ services:
     command:
       - "/bin/sh"
       - "-c"
-      - "/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components \"rpc,synchronizer\""
+      - '/app/cdk-validium-node run --network custom --custom-network-file /app/genesis.json --cfg /app/config.toml --components "rpc,synchronizer"'
 
   cdk-validium-data-node-db:
     container_name: cdk-validium-data-node-db
@@ -623,7 +623,7 @@ services:
   cdk-validium-sh:
     container_name: zkevm-sh
     image: hermeznetwork/cdk-validium-node:develop
-    stdin_open: true 
+    stdin_open: true
     tty: true
     environment:
       - CDK_VALIDIUM_NODE_STATEDB_HOST=supernets-state-db
