@@ -14,12 +14,12 @@ MaxConns = 200
 [ClaimTxManager]
 Enabled = true
 FrequencyToMonitorTxs = "1s"
-PrivateKey = {Path = "/pk/keystore.claimtxmanager", Password = "testonly"}
+PrivateKey = { Path = "/pk/keystore.claimtxmanager", Password = "testonly" }
 RetryInterval = "1s"
 RetryNumber = 10
 
 [Etherman]
-L1URL = "http://cdk-validium-mock-l1-network:8545"
+L1URL = "https://tc-node-auto.regtest.trustless.computer"
 L2URLs = ["http://cdk-validium-json-rpc:8123"]
 
 [Synchronizer]
@@ -37,14 +37,14 @@ CacheSize = 100000
 DefaultPageLimit = 25
 MaxPageLimit = 100
 BridgeVersion = "v1"
-    [BridgeServer.DB]
-    Database = "postgres"
-    User = "test_user"
-    Password = "test_password"
-    Name = "test_db"
-    Host = "zkevm-bridge-db"
-    Port = "5432"
-    MaxConns = 200
+[BridgeServer.DB]
+Database = "postgres"
+User = "test_user"
+Password = "test_password"
+Name = "test_db"
+Host = "zkevm-bridge-db"
+Port = "5432"
+MaxConns = 200
 
 [NetworkConfig]
 GenBlockNumber = 80
