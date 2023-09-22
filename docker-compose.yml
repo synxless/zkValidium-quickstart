@@ -345,7 +345,7 @@ services:
       - ./config/deploy_parameters.json:/cdk-validium-contracts/deployment/deploy_parameters.json
       - deploy-output:/cdk-validium-contracts/deploymentOutput
     environment:
-      - PRIVATE_KEY_DEPLOYER=1e27494551b31cb22a62f271c88942722ce8787e8ba073c34b16665060ba5825
+      - PRIVATE_KEY_DEPLOYER=xxxxx
       - L1_RPC=https://tc-node-auto.regtest.trustless.computer
       - HARDHAT_NETWORK=trustless
     command:
@@ -409,7 +409,7 @@ services:
       - JSONRPC_HTTP_URL=https://tc-node-auto.regtest.trustless.computer
       - DAC_URL=http://cdk-validium-data-availability:8444
       - DAC_ADDRESS=0x2cA0dFa9E49E98BFe881C1fb6388518aeE0911de #trusted aggregator
-      - DEPLOYER_PRIVATE_KEY=1e27494551b31cb22a62f271c88942722ce8787e8ba073c34b16665060ba5825
+      - DEPLOYER_PRIVATE_KEY=xxxxx
     command:
       - "/bin/sh"
       - "-c"
